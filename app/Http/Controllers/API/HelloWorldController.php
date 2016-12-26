@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Http\Controllers\Controller;
+use Henry;
 
 class HelloWorldController extends Controller
 {
@@ -26,7 +27,7 @@ class HelloWorldController extends Controller
      */
     public function index()
     {
-        return 'Hello World';
+        return Henry::formatResponse(1, 1, 1);
     }
 
     /**
