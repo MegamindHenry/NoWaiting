@@ -27,7 +27,7 @@ class HenryServiceProvider extends ServiceProvider
         //
         App::bind('henry', function()
         {
-            return new App\Henry\HenryAPI;
+            return new App\Henry\Henry;
         });
     }
 }

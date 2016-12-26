@@ -2,7 +2,7 @@
 
 namespace App\Henry;
 
-class HenryAPI {
+class Henry {
 
     public function formatResponse($code, $message, $data)
     {
