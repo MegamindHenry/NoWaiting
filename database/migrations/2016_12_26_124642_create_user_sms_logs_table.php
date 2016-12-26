@@ -18,8 +18,7 @@ class CreateUserSmsLogsTable extends Migration
             $table->increments('id');
             $table->string('phone', 11);
             $table->integer('code')->default(456789);
-            $table->integer('app_user_id');
-            $table->timestamps('created_at');
+            $table->timestamp('created_at');
         });
     }
 

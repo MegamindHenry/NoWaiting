@@ -22,6 +22,7 @@ Route::get('/user', function (Request $request) {
 $api->version('v1', function ($api) {
     $api->get('helloworld', 'App\Http\Controllers\API\HelloWorldController@index');
     $api->post('authenticate', 'App\Http\Controllers\API\HelloWorldController@authenticate');
+    $api->post('fake/addsms', 'App\Http\Controllers\FakeController@addSMS');
 });
 
 $api->version('v1', ['middleware' => 'jwt.auth'],function ($api) {
