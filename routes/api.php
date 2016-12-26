@@ -21,4 +21,9 @@ Route::get('/user', function (Request $request) {
 
 $api->version('v1', function ($api) {
     $api->get('helloworld', 'App\Http\Controllers\HelloWorldController@index');
+    $api->post('authenticate', 'App\Http\Controllers\HelloWorldController@authenticate');
+});
+
+$api->version('v1', ['middleware' => 'jwt.auth'],function ($api) {
+    $api->get('info', 'App\Http\Controllers\HelloWorldController@info');
 });
