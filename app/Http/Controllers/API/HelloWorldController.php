@@ -16,7 +16,7 @@ class HelloWorldController extends Controller
      */
     public function __construct()
     {
-        
+        $this->middleware('guest', ['except' => ['authenticate', 'index']]);
     }
 
     /**
@@ -62,10 +62,6 @@ class HelloWorldController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
 
-        // $user = User::first();
-
         return response()->json(compact('user'));
-
-        // return '1';
     }   
 }

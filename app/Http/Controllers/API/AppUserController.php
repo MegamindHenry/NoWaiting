@@ -8,6 +8,16 @@ use App\Http\Controllers\Controller;
 class AppUserController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('jwt.auth');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -15,6 +25,9 @@ class AppUserController extends Controller
     public function index()
     {
         //
+        $user = JWTAuth::parseToken()->authenticate();
+
+        return response()->json(compact('user'));
     }
 
     /**
