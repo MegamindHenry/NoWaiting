@@ -4,6 +4,7 @@ namespace App\Henry;
 
 use Carbon\Carbon;
 use DB;
+use App\User;
 
 class Henry {
 
@@ -46,6 +47,20 @@ class Henry {
     	}
 
         return ['error' => 'unknown'];
+    }
+
+    public function registerUser($phone, $code)
+    {
+    	$newRecord = new User();
+    	$newRecord->name = md5($phone);
+    	$newRecord->email = md5($phone);
+    	$newRecord->password = md5($$code);
+    	if(!$newRecord->save())
+    	{
+    		return ['error' => 'could_not_create_user'];
+    	}
+
+    	return $newRecord->id;
     }
 
 }

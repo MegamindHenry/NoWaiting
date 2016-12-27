@@ -76,9 +76,18 @@ class AppUserController extends Controller
             return response()->json($response);
         }
 
+        $userId = Henry::registerUser($phone, $code);
+
+        if(isset($userId['error']))
+        {
+            $response = ResponseHelper::formatResponse('801', 'error', $userId['error']);
+            return response()->json($response);
+        }
+
 
         $newRecord = new AppUser();
         $newRecord->phone = $phone;
+        $newRecord->user_id = $userId;
 
         if(! $newRecord->save())
         {
