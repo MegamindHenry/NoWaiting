@@ -8,6 +8,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Http\Controllers\Controller;
 use Henry;
 use App\Http\Helpers\ResponseHelper;
+use Carbon\Carbon;
 
 class HelloWorldController extends Controller
 {
@@ -28,7 +29,10 @@ class HelloWorldController extends Controller
      */
     public function index()
     {
-        $response = ResponseHelper::formatResponse('998', 'success', array());
+        $carbon = Carbon::now('GMT+8');
+        $carbon->addMinutes(10);
+
+        $response = ResponseHelper::formatResponse('998', 'success', array($carbon));
         return response()->json($response);
     }
 

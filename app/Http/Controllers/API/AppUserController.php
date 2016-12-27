@@ -8,6 +8,7 @@ use App\Http\Helpers\ResponseHelper;
 use App\UserSmsLog;
 use App\AppUser;
 use Validator;
+use Henry;
 
 class AppUserController extends Controller
 {
@@ -63,10 +64,17 @@ class AppUserController extends Controller
             return response()->json($response);
         }
 
-        $requestData = $request->only('phone');
+        $requestData = $request->only('phone', 'code');
         $phone = $requestData['phone'];
+        $code = $requestData['code'];
 
-        
+        $validateRegister = Henry::validateRegister($phone, $code);
+
+        if(isset($validateRegister['error']))
+        {
+            $response = ResponseHelper::formatResponse('801', 'error', $validateRegister['error']);
+            return response()->json($response);
+        }
 
 
         $newRecord = new AppUser();

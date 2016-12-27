@@ -2,6 +2,9 @@
 
 namespace App\Henry;
 
+use Carbon\Carbon;
+use DB;
+
 class Henry {
 
     public function validateRegister($phone, $code)
@@ -22,13 +25,24 @@ class Henry {
     		->latest()
     		->first();
 
-    	if(count($smsCode) = 0)
+    	if(!$smsCode)
     	{
     		return ['error' => 'sms_code_does_not_match'];
     	}
     	else
     	{
-    		;
+    		$createdAt = $smsCode->created_at;
+    		$carbonNow = Carbon::now('GMT+8');
+    		$carbonCreated = new Carbon($createdAt);
+    		$carbonExpire = $carbonCreated->addMinutes(10);
+    		if($carbonNow->gt($carbonExpire))
+    		{
+    			return ['error' => 'sms_code_expired'];
+    		}
+    		else
+    		{
+    			return true;
+    		}
     	}
 
         return ['error' => 'unknown'];
