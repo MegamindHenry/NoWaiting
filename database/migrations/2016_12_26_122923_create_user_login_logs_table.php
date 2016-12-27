@@ -18,7 +18,7 @@ class CreateUserLoginLogsTable extends Migration
             $table->string('ip_addr', 20)->nullable();
             $table->string('device')->nullable();
             $table->integer('app_user_id');
-            $table->timestamp('created_at');
+            $table->timestamps();
         });
     }
 

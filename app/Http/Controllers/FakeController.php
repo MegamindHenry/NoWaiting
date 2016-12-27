@@ -25,20 +25,19 @@ class FakeController extends Controller
      */
     public function addSMS(Request $request)
     {
-        // grab credentials from the request
-        $credentials = $request->only('phone', 'code');
-
         $newRecord = new UserSmsLog();
         $newRecord->phone = rand(10000000000, 19999999999);
         $newRecord->code = rand(100000, 999999);
+        $newRecord->action = 'fake';
         if(! $newRecord->save())
         {
-        	return response()->json(['error' => 'could_not_save'], 800);
+            $response = ResponseHelper::formatResponse('800', 'could_not_save', array());
+        	return response()->json($response);
         }
 
-        $json_response = ['code' => 998];
+        $response = ResponseHelper::formatResponse('998', 'success', array());
 
         // all good so return the token
-        return response()->json($json_response);
+        return response()->json($response);
     }
 }

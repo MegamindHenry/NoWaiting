@@ -4,9 +4,9 @@ namespace App\Henry;
 
 class Henry {
 
-    public function formatResponse($code, $message, $data)
+    public function validateRegister($phone, $code)
     {
-        return '111';
+        return false;
     }
 
 }

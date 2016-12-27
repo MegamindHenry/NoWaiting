@@ -7,6 +7,7 @@ use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Http\Controllers\Controller;
 use Henry;
+use App\Http\Helpers\ResponseHelper;
 
 class HelloWorldController extends Controller
 {
@@ -27,7 +28,8 @@ class HelloWorldController extends Controller
      */
     public function index()
     {
-        return Henry::formatResponse(1, 1, 1);
+        $response = ResponseHelper::formatResponse('998', 'success', array());
+        return response()->json($response);
     }
 
     /**
@@ -43,15 +45,19 @@ class HelloWorldController extends Controller
         try {
             // attempt to verify the credentials and create a token for the user
             if (! $token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'invalid_credentials'], 401);
+
+                $response = ResponseHelper::formatResponse('401', 'invalid_credentials', array());
+                return response()->json($response);
             }
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
-            return response()->json(['error' => 'could_not_create_token'], 500);
+            $response = ResponseHelper::formatResponse('500', 'could_not_create_token', array());
+            return response()->json($response);
         }
 
         // all good so return the token
-        return response()->json(compact('token'));
+        $response = ResponseHelper::formatResponse('998', 'success', ['token' => $token];
+        return response()->json($response);
     }
 
     /**
@@ -63,6 +69,7 @@ class HelloWorldController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
 
-        return response()->json(compact('user'));
+        $response = ResponseHelper::formatResponse('998', 'success', ['user' => $user];
+        return response()->json($response);
     }   
 }

@@ -17,8 +17,9 @@ class CreateUserSmsLogsTable extends Migration
         Schema::create('user_sms_logs', function (Blueprint $table) {
             $table->increments('id');
             $table->string('phone', 11);
-            $table->integer('code')->default(456789);
-            $table->timestamp('created_at');
+            $table->integer('code');
+            $table->string('action', 20);
+            $table->timestamps();
         });
     }
 

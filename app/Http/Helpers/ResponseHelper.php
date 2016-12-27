@@ -6,7 +6,13 @@ class ResponseHelper {
 
     public static function formatResponse($code, $message, $data)
     {
-        return '222';
+        $response = [
+        	'code' => $code,
+        	'message' => $message,
+        	'data' => $data
+        ];
+
+        return $response;
     }
 
 }

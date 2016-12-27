@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\ResponseHelper;
+use App\UserSmsLog;
 
 class AppUserController extends Controller
 {
@@ -14,7 +16,7 @@ class AppUserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('jwt.auth');
+        $this->middleware('jwt.auth', ['except' => ['store']]);
     }
 
     /**
@@ -27,7 +29,8 @@ class AppUserController extends Controller
         //
         $user = JWTAuth::parseToken()->authenticate();
 
-        return response()->json(compact('user'));
+        $response = ResponseHelper::formatResponse('998', 'success', ['user' => $user];
+        return response()->json($response);
     }
 
     /**
@@ -48,7 +51,20 @@ class AppUserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $newRecord = new UserSmsLog();
+        $newRecord->phone = rand(10000000000, 19999999999);
+        $newRecord->code = rand(100000, 999999);
+        $newRecord->action = 'register';
+        if(! $newRecord->save())
+        {
+            $response = ResponseHelper::formatResponse('800', 'could_not_save', array());
+            return response()->json($response);
+        }
+
+        $response = ResponseHelper::formatResponse('998', 'success', array());
+
+        // all good so return the token
+        return response()->json($response);
     }
 
     /**
