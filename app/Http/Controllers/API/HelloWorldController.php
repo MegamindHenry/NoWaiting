@@ -56,7 +56,7 @@ class HelloWorldController extends Controller
         }
 
         // all good so return the token
-        $response = ResponseHelper::formatResponse('998', 'success', ['token' => $token];
+        $response = ResponseHelper::formatResponse('998', 'success', ['token' => $token]);
         return response()->json($response);
     }
 
@@ -69,7 +69,7 @@ class HelloWorldController extends Controller
     {
         $user = JWTAuth::parseToken()->authenticate();
 
-        $response = ResponseHelper::formatResponse('998', 'success', ['user' => $user];
+        $response = ResponseHelper::formatResponse('998', 'success', ['user' => $user]);
         return response()->json($response);
     }   
 }

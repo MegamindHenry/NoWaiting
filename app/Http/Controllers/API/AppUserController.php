@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\ResponseHelper;
 use App\UserSmsLog;
+use App\AppUser;
+use Validator;
 
 class AppUserController extends Controller
 {
@@ -16,7 +18,7 @@ class AppUserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('jwt.auth', ['except' => ['store']]);
+        $this->middleware('jwt.auth', ['except' => ['store', 'registerSMS']]);
     }
 
     /**
@@ -29,7 +31,7 @@ class AppUserController extends Controller
         //
         $user = JWTAuth::parseToken()->authenticate();
 
-        $response = ResponseHelper::formatResponse('998', 'success', ['user' => $user];
+        $response = ResponseHelper::formatResponse('998', 'success', ['user' => $user]);
         return response()->json($response);
     }
 
@@ -51,8 +53,53 @@ class AppUserController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'phone' => 'required|size:11',
+            'code' => 'required|size:6',
+        ]);
+
+        if ($validator->fails()) {
+            $response = ResponseHelper::formatResponse('801', 'error', $validator->errors());
+            return response()->json($response);
+        }
+
+        $requestData = $request->only('phone');
+        $phone = $requestData['phone'];
+
+        
+
+
+        $newRecord = new AppUser();
+        $newRecord->phone = $phone;
+
+        if(! $newRecord->save())
+        {
+            $response = ResponseHelper::formatResponse('800', 'could_not_save', array());
+            return response()->json($response);
+        }
+
+        $response = ResponseHelper::formatResponse('998', 'success', array());
+
+        // all good so return the token
+        return response()->json($response);
+    }
+
+    public function registerSMS(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'phone' => 'required|size:11',
+        ]);
+
+        if ($validator->fails()) {
+            $response = ResponseHelper::formatResponse('801', 'error', $validator->errors());
+            return response()->json($response);
+        }
+
+        $requestData = $request->only('phone');
+        $phone = $requestData['phone'];
+
         $newRecord = new UserSmsLog();
-        $newRecord->phone = rand(10000000000, 19999999999);
+        $newRecord->phone = $phone;
         $newRecord->code = rand(100000, 999999);
         $newRecord->action = 'register';
         if(! $newRecord->save())
