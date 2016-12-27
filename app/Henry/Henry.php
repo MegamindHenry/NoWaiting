@@ -5,8 +5,22 @@ namespace App\Henry;
 use Carbon\Carbon;
 use DB;
 use App\User;
+use App\Http\Helpers\TimeHelper;
 
 class Henry {
+	public function validateUserExist($phone)
+	{
+		$appUsers = DB::table('app_users')
+			->where('phone', '=', $phone)
+			->get();
+
+		if(count($appUsers) > 0)
+		{
+			return true;
+		}
+
+		return false;
+	}
 
     public function validateRegister($phone, $code)
     {
@@ -35,8 +49,8 @@ class Henry {
     		$createdAt = $smsCode->created_at;
     		$carbonNow = Carbon::now('GMT+8');
     		$carbonCreated = new Carbon($createdAt);
-    		$carbonExpire = $carbonCreated->addMinutes(10);
-    		if($carbonNow->gt($carbonExpire))
+
+    		if(!TimeHelper::validateTimeExpire($carbonNow, $carbonCreated, 10))
     		{
     			return ['error' => 'sms_code_expired'];
     		}
