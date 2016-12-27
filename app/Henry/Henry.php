@@ -54,7 +54,7 @@ class Henry {
     	$newRecord = new User();
     	$newRecord->name = md5($phone);
     	$newRecord->email = md5($phone);
-    	$newRecord->password = md5($$code);
+    	$newRecord->password = md5($code);
     	if(!$newRecord->save())
     	{
     		return ['error' => 'could_not_create_user'];

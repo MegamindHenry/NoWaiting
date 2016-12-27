@@ -30,7 +30,7 @@ $api->version('v1', ['middleware' => 'jwt.auth'],function ($api) {
 });
 
 $api->version('v1', ['middleware' => ['api.throttle'], 'limit' => 1, 'expires' => 1],function ($api) {
-    $api->post('registersms', 'App\Http\Controllers\API\AppUserController@registerSMS');
+    $api->post('registersms', 'App\Http\Controllers\API\SendSMSController@registerSMS');
 });
 
 $api->version('v1', ['middleware' => ['api.throttle'], 'limit' => 5, 'expires' => 1],function ($api) {
