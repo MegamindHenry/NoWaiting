@@ -63,6 +63,47 @@ class Henry {
         return ['error' => 'unknown'];
     }
 
+    public function validateLogin($phone, $code)
+    {
+    	$users = DB::table('app_users')
+    		->where('phone', '=', $phone)
+    		->get();
+
+    	if(count($users) = 0)
+    	{
+    		return ['error' => 'have_not_register_yet'];
+    	}
+
+    	$smsCode = DB::table('user_sms_logs')
+    		->where('phone', '=', $phone)
+    		->where('code', '=', $code)
+    		->where('action', '=', 'login')
+    		->latest()
+    		->first();
+
+    	if(!$smsCode)
+    	{
+    		return ['error' => 'sms_code_does_not_match'];
+    	}
+    	else
+    	{
+    		$createdAt = $smsCode->created_at;
+    		$carbonNow = Carbon::now('GMT+8');
+    		$carbonCreated = new Carbon($createdAt);
+
+    		if(!TimeHelper::validateTimeExpire($carbonNow, $carbonCreated, 10))
+    		{
+    			return ['error' => 'sms_code_expired'];
+    		}
+    		else
+    		{
+    			return true;
+    		}
+    	}
+
+        return ['error' => 'unknown'];
+    }
+
     public function registerUser($phone, $code)
     {
     	$newRecord = new User();
@@ -77,4 +118,8 @@ class Henry {
     	return $newRecord->id;
     }
 
+    public function getUserByPhone($phone)
+    {
+    	
+    }
 }
