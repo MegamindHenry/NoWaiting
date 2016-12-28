@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Henry;
 use App\Http\Helpers\ResponseHelper;
 use Carbon\Carbon;
+use App\User;
 
 class HelloWorldController extends Controller
 {
@@ -27,12 +28,17 @@ class HelloWorldController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $carbon = Carbon::now('GMT+8');
-        $carbon->addMinutes(10);
+        // $user = User::first();
 
-        $response = ResponseHelper::formatResponse('998', 'success', array($carbon));
+        // $token = Henry::getTokenByUser($user);
+
+        $token = $request->input('token');
+
+        $user = Henry::getUserByToken($token);
+
+        $response = ResponseHelper::formatResponse('998', 'success', array($user));
         return response()->json($response);
     }
 

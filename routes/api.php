@@ -36,4 +36,5 @@ $api->version('v1', ['middleware' => ['api.throttle'], 'limit' => 1, 'expires' =
 
 $api->version('v1', ['middleware' => ['api.throttle'], 'limit' => 5, 'expires' => 1],function ($api) {
     $api->post('register', 'App\Http\Controllers\API\AppUserController@store');
+    $api->post('login', 'App\Http\Controllers\API\AppAuthController@SMSLogin');
 });

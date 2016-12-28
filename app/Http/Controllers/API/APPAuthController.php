@@ -34,7 +34,9 @@ class APPAuthController extends Controller
             return response()->json($response);
         }
 
-        $response = ResponseHelper::formatResponse('998', 'success', array());
+        $token = Henry::getTokenByUser($validateLogin);
+
+        $response = ResponseHelper::formatResponse('998', 'success', array('token' => $token));
 
         // all good so return the token
         return response()->json($response);

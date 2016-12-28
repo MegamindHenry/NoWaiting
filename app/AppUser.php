@@ -17,8 +17,8 @@ class AppUser extends Model
         return $this->hasOne('App\UserInfo');
     }
 
-    public function userInfo()
+    public function userLoginLog()
     {
-        return $this->hasOne('App\UserInfo');
+        return $this->hasOne('App\UserLoginLog');
     }
 }

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use DB;
 use App\User;
 use App\Http\Helpers\TimeHelper;
+use JWTAuth;
 
 class Henry {
 	public function validateUserExist($phone)
@@ -69,7 +70,7 @@ class Henry {
     		->where('phone', '=', $phone)
     		->get();
 
-    	if(count($users) = 0)
+    	if(count($users) == 0)
     	{
     		return ['error' => 'have_not_register_yet'];
     	}
@@ -97,7 +98,7 @@ class Henry {
     		}
     		else
     		{
-    			return true;
+    			return $users[0];
     		}
     	}
 
@@ -120,6 +121,19 @@ class Henry {
 
     public function getUserByPhone($phone)
     {
-    	
+    	;
+    }
+
+    public function getTokenByUser($user)
+    {
+        $token = JWTAuth::fromUser($user);
+        return $token;
+    }
+
+    public function getUserByToken($token)
+    {
+        $user = JWTAuth::setToken($token)->authenticate();
+
+        return $user;
     }
 }

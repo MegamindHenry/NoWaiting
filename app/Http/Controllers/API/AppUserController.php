@@ -95,7 +95,9 @@ class AppUserController extends Controller
             return response()->json($response);
         }
 
-        $response = ResponseHelper::formatResponse('998', 'success', array());
+        $token = Henry::getTokenByUser($newRecord);
+
+        $response = ResponseHelper::formatResponse('998', 'success', array('token' => $token));
 
         // all good so return the token
         return response()->json($response);
