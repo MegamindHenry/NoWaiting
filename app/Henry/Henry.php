@@ -7,6 +7,7 @@ use DB;
 use App\User;
 use App\Http\Helpers\TimeHelper;
 use JWTAuth;
+use App\UserSMSLog;
 
 class Henry {
 	public function validateUserExist($phone)
@@ -23,7 +24,7 @@ class Henry {
 		return false;
 	}
 
-    public function validateRegister($phone, $code)
+    public function validateRegister($phone, $code, $action)
     {
     	$users = DB::table('app_users')
     		->where('phone', '=', $phone)
@@ -37,7 +38,7 @@ class Henry {
     	$smsCode = DB::table('user_sms_logs')
     		->where('phone', '=', $phone)
     		->where('code', '=', $code)
-    		->where('action', '=', 'register')
+    		->where('action', '=', $action)
     		->latest()
     		->first();
 
@@ -64,7 +65,7 @@ class Henry {
         return ['error' => 'unknown'];
     }
 
-    public function validateLogin($phone, $code)
+    public function validateLogin($phone, $code, $action)
     {
     	$users = DB::table('app_users')
     		->where('phone', '=', $phone)
@@ -78,7 +79,7 @@ class Henry {
     	$smsCode = DB::table('user_sms_logs')
     		->where('phone', '=', $phone)
     		->where('code', '=', $code)
-    		->where('action', '=', 'login')
+    		->where('action', '=', $action)
     		->latest()
     		->first();
 
@@ -135,5 +136,17 @@ class Henry {
         $user = JWTAuth::setToken($token)->authenticate();
 
         return $user;
+    }
+
+    public function sendSMS($phone, $method){
+        $newRecord = new UserSmsLog();
+        $newRecord->phone = $phone;
+        $newRecord->code = rand(100000, 999999);
+        $newRecord->action = $method;
+        if(! $newRecord->save())
+        {
+            return false;
+        }
+        return true;
     }
 }

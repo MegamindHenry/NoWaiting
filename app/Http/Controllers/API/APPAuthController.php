@@ -4,13 +4,14 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Helpers\ResponseHelper;
+use App\Http\Helpers\DebugHelper;
 use Validator;
 use App\Http\Controllers\Controller;
 use Henry;
 
 class APPAuthController extends Controller
 {
-    public function SMSLogin(Request $request)
+    public function aggregate(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'phone' => 'required|size:11',
@@ -26,19 +27,62 @@ class APPAuthController extends Controller
         $phone = $requestData['phone'];
         $code = $requestData['code'];
 
-        $validateLogin = Henry::validateLogin($phone, $code);
-
-        if(isset($validateRegister['error']))
+        if(Henry::validateUserExist($phone))
         {
-            $response = ResponseHelper::formatResponse('801', 'error', $validateRegister['error']);
+            $validateLogin = Henry::validateLogin($phone, $code, 'aggregate');
+
+            // $response = ResponseHelper::formatResponse('998', 'success', array('token' => $validateLogin));
+            // return response()->json($response);
+
+            return DebugHelper::dump($validateLogin);
+            die;
+
+            if(isset($validateLogin['error']))
+            {
+                $response = ResponseHelper::formatResponse('801', 'error', $validateLogin['error']);
+                return response()->json($response);
+            }
+
+            $token = Henry::getTokenByUser($validateLogin);
+
+            $response = ResponseHelper::formatResponse('998', 'success', array('token' => $token));
             return response()->json($response);
         }
+        else
+        {
+            $validateRegister = Henry::validateRegister($phone, $code);
 
-        $token = Henry::getTokenByUser($validateLogin);
+            if(isset($validateRegister['error']))
+            {
+                $response = ResponseHelper::formatResponse('801', 'error', $validateRegister['error']);
+                return response()->json($response);
+            }
 
-        $response = ResponseHelper::formatResponse('998', 'success', array('token' => $token));
+            $userId = Henry::registerUser($phone, $code, 'aggregate');
 
-        // all good so return the token
-        return response()->json($response);
+            if(isset($userId['error']))
+            {
+                $response = ResponseHelper::formatResponse('801', 'error', $userId['error']);
+                return response()->json($response);
+            }
+
+
+            $newRecord = new AppUser();
+            $newRecord->phone = $phone;
+            $newRecord->user_id = $userId;
+
+            if(! $newRecord->save())
+            {
+                $response = ResponseHelper::formatResponse('800', 'could_not_save', array());
+                return response()->json($response);
+            }
+
+            $token = Henry::getTokenByUser($newRecord);
+
+            $response = ResponseHelper::formatResponse('998', 'success', array('token' => $token));
+
+            // all good so return the token
+            return response()->json($response);
+        }
     }
 }

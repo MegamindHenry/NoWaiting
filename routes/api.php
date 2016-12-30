@@ -29,12 +29,10 @@ $api->version('v1', ['middleware' => 'jwt.auth'],function ($api) {
     $api->get('info', 'App\Http\Controllers\API\HelloWorldController@info');
 });
 
-$api->version('v1', ['middleware' => ['api.throttle'], 'limit' => 1, 'expires' => 1],function ($api) {
-    $api->post('registersms', 'App\Http\Controllers\API\SendSMSController@registerSMS');
-    $api->post('loginsms', 'App\Http\Controllers\API\SendSMSController@loginSMS');
+$api->version('v1', ['middleware' => ['api.throttle'], 'limit' => 10, 'expires' => 1],function ($api) {
+    $api->post('aggregatesms', 'App\Http\Controllers\API\SendSMSController@aggregatesms@aggregateSMS');
 });
 
 $api->version('v1', ['middleware' => ['api.throttle'], 'limit' => 5, 'expires' => 1],function ($api) {
-    $api->post('register', 'App\Http\Controllers\API\AppUserController@store');
-    $api->post('login', 'App\Http\Controllers\API\AppAuthController@SMSLogin');
+    $api->post('aggregate', 'App\Http\Controllers\API\AppAuthController@aggregate');
 });
